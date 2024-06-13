@@ -7,6 +7,7 @@ import { Search, Send } from "lucide-react";
 import { Comment } from "@/types/Comment";
 import { Input } from "@/components/ui/input";
 import { UserContext } from "./Feed";
+import { Textarea } from "./ui/textarea";
 
 const DEFAULT_COMMENTS_SHOWN = 3;
 const COMMENTS_SHOWN_INCREMENT = 2;
@@ -18,7 +19,7 @@ export default function CommentSection(props: { postId: number; comments: Commen
   const [comments, setComments] = useState(props.comments);
 
   const onSubmitComment = useCallback(
-    async (commentText: string) => {
+    async (commentName: string, commentText: string) => {
       if (currentUser === null) {
         alert("You need to login to add a comment");
         return;
@@ -29,11 +30,20 @@ export default function CommentSection(props: { postId: number; comments: Commen
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ postId: props.postId, email: currentUser.email, body: commentText }),
+          body: JSON.stringify({
+            postId: props.postId,
+            email: currentUser.email,
+            name: commentName,
+            body: commentText,
+          }),
         });
         if (response.ok) {
           const newComment = await response.json();
-          setComments((prevComments) => [newComment, ...prevComments]);
+          setComments((prevComments) => [
+            ...prevComments.slice(0, nrCommentsShown),
+            newComment,
+            ...prevComments.slice(nrCommentsShown, prevComments.length),
+          ]);
           setNrCommentsShown((n) => n + 1);
           //TODO: Scroll to top
         } else {
@@ -43,7 +53,7 @@ export default function CommentSection(props: { postId: number; comments: Commen
         console.error("Failed to submit comment", error);
       }
     },
-    [currentUser, props.postId]
+    [currentUser, nrCommentsShown, props.postId]
   );
 
   return (
@@ -67,7 +77,7 @@ export default function CommentSection(props: { postId: number; comments: Commen
 
 function CommentCard(props: Comment) {
   return (
-    <Card>
+    <Card className="mb-2">
       <CardHeader>
         <CardTitle>{props.name}</CardTitle>
         <CardDescription>{props.email.split("@")[0]}</CardDescription>
@@ -79,35 +89,47 @@ function CommentCard(props: Comment) {
   );
 }
 
-function AddCommentForm(props: { onSubmitComment: (text: string) => void }) {
+function AddCommentForm(props: { onSubmitComment: (title: string, text: string) => void }) {
+  const [commentName, setcommentName] = useState("");
   const [commentText, setcommentText] = useState("");
+
   return (
     <div className="flex-1 w-full">
       <form
-        className="flex flex-row"
+        className="flex flex-col"
         onSubmit={(e: SyntheticEvent) => {
           e.preventDefault();
           if (commentText.length > 0) {
-            console.log(commentText);
-            props.onSubmitComment(commentText);
+            setcommentText("");
+            setcommentName("");
+            props.onSubmitComment(commentName, commentText);
           }
         }}
       >
-        <div className="relative flex-1 min-w-0">
-          <Search className="top-2.5 left-2.5 absolute w-4 h-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Add a comment..."
-            className="shadow-none pl-8 w-full appearance-none outline-none"
-            value={commentText}
-            onChange={(e) => {
-              setcommentText(e.target.value);
-            }}
-          />
+        <div className="flex flex-row flex-1">
+          <div className="relative flex-1 min-w-0">
+            <Search className="top-2.5 left-2.5 absolute w-4 h-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Give your comment a name..."
+              className="shadow-none mb-1 pl-8 w-full appearance-none outline-none"
+              value={commentName}
+              onChange={(e) => {
+                setcommentName(e.target.value);
+              }}
+            />
+          </div>
+          <Button variant="ghost" type="submit">
+            <Send />
+          </Button>
         </div>
-        <Button variant="ghost" type="submit">
-          <Send />
-        </Button>
+        <Textarea
+          placeholder="Add a comment..."
+          value={commentText}
+          onChange={(e) => {
+            setcommentText(e.target.value);
+          }}
+        />
       </form>
     </div>
   );

@@ -7,6 +7,7 @@ import Feed from "@/components/Feed";
 export default async function FeedPage() {
   const postRes = await fetch("https://jsonplaceholder.typicode.com/posts/");
   //TODO: fetch current user from cookie
+  //TODO: fetch user for each post
   const userRes = await fetch("https://jsonplaceholder.typicode.com/users/1");
 
   if (!postRes.ok || !userRes.ok) {
