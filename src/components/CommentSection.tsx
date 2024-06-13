@@ -3,7 +3,7 @@
 import { SyntheticEvent, useCallback, useContext, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { Search, Send } from "lucide-react";
+import { MessageSquareText, Send } from "lucide-react";
 import { Comment } from "@/types/Comment";
 import { Input } from "@/components/ui/input";
 import { UserContext } from "./Feed";
@@ -99,7 +99,7 @@ function AddCommentForm(props: { onSubmitComment: (title: string, text: string) 
         className="flex flex-col"
         onSubmit={(e: SyntheticEvent) => {
           e.preventDefault();
-          if (commentText.length > 0) {
+          if (commentName.length > 0 && commentText.length > 0) {
             setcommentText("");
             setcommentName("");
             props.onSubmitComment(commentName, commentText);
@@ -108,7 +108,7 @@ function AddCommentForm(props: { onSubmitComment: (title: string, text: string) 
       >
         <div className="flex flex-row flex-1">
           <div className="relative flex-1 min-w-0">
-            <Search className="top-2.5 left-2.5 absolute w-4 h-4 text-muted-foreground" />
+            <MessageSquareText className="top-2.5 left-2.5 absolute w-4 h-4 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Give your comment a name..."
@@ -119,12 +119,17 @@ function AddCommentForm(props: { onSubmitComment: (title: string, text: string) 
               }}
             />
           </div>
-          <Button variant="ghost" type="submit">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="submit"
+            disabled={commentName.length === 0 || commentText.length === 0}
+          >
             <Send />
           </Button>
         </div>
         <Textarea
-          placeholder="Add a comment..."
+          placeholder="Write your a comment..."
           value={commentText}
           onChange={(e) => {
             setcommentText(e.target.value);

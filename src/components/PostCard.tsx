@@ -25,7 +25,7 @@ export default function PostCard(props: Post) {
       <CardContent>
         <p>{props.body}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="justify-end">
         <PostDialog {...props} />
       </CardFooter>
     </Card>
@@ -33,7 +33,7 @@ export default function PostCard(props: Post) {
 }
 
 export function PostDialog(props: Post) {
-  const { isPending, error, data } = useQuery({
+  const { isPending, error, data } = useQuery<Comment[]>({
     queryKey: ["postComments" + props.id],
     queryFn: () => fetch(`https://jsonplaceholder.typicode.com/posts/${props.id}/comments`).then((res) => res.json()),
   });
@@ -57,7 +57,7 @@ export function PostDialog(props: Post) {
             <p>{props.body}</p>
           </div>
           {/* //loader skeleton */}
-          <div className="h-full overflow-y-scroll [@media(min-width:767px)]:scrollbar-hide">
+          <div className="h-full overflow-y-scroll [@media(min-width:100px)]:scrollbar-hide">
             <CommentSection postId={props.id} comments={data} />
           </div>
         </div>

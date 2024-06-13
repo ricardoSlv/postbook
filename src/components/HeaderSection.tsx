@@ -54,7 +54,7 @@ function SearchBar() {
           <Search className="top-2.5 left-2.5 absolute w-4 h-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search products..."
+            placeholder="Search posts..."
             className="bg-background shadow-none pl-8 w-full md:w-2/3 lg:w-1/3 appearance-none"
           />
         </div>
