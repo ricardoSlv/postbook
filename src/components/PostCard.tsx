@@ -47,19 +47,17 @@ function PostDialog(props: Post) {
       <DialogTrigger asChild>
         <Button>View</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[1025px] h-5/6">
+      <DialogContent className="grid-rows-[auto_1fr] sm:max-w-[1025px] h-5/6">
         <DialogHeader>
           <DialogTitle>{props.title}</DialogTitle>
           <DialogDescription>{props.userId}</DialogDescription>
         </DialogHeader>
-        <div className="flex-1 grid md:grid-cols-[1fr_330px] lg:grid-cols-[1fr_420px] min-h-0">
+        <div className="grid md:grid-cols-[1fr_330px] lg:grid-cols-[1fr_420px] min-h-0">
           <div>
             <p>{props.body}</p>
           </div>
           {/* //loader skeleton */}
-          <div className="h-full overflow-y-scroll [@media(min-width:100px)]:scrollbar-hide">
-            <CommentSection postId={props.id} comments={data} />
-          </div>
+          <CommentSection postId={props.id} comments={data} />
         </div>
       </DialogContent>
     </Dialog>
