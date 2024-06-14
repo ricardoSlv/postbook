@@ -123,15 +123,17 @@ export default function CommentSection(props: { postId: number; comments: Commen
   );
 
   return (
-    <>
-      {comments.slice(0, nrCommentsShown).map((comment) => (
-        <CommentCard
-          key={comment.id}
-          comment={comment}
-          onDeleteComment={onDeleteComment}
-          onUpdateComment={onUpdateComment}
-        />
-      ))}
+    <div className="gap-3 grid grid-rows-[1fr_auto] h-full overflow-y-scroll [@media(min-width:100px)]:scrollbar-hide">
+      <div className="min-h-0 overflow-y-scroll [@media(min-width:100px)]:scrollbar-hide">
+        {comments.slice(0, nrCommentsShown).map((comment) => (
+          <CommentCard
+            key={comment.id}
+            comment={comment}
+            onDeleteComment={onDeleteComment}
+            onUpdateComment={onUpdateComment}
+          />
+        ))}
+      </div>
       {nrCommentsShown < comments.length ? (
         <Button
           variant="link"
@@ -142,7 +144,7 @@ export default function CommentSection(props: { postId: number; comments: Commen
         </Button>
       ) : null}
       <AddCommentForm onSubmitComment={onSubmitComment} />
-    </>
+    </div>
   );
 }
 
