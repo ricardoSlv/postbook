@@ -32,7 +32,7 @@ export default function PostCard(props: Post) {
   );
 }
 
-export function PostDialog(props: Post) {
+function PostDialog(props: Post) {
   const { isPending, error, data } = useQuery<Comment[]>({
     queryKey: ["postComments" + props.id],
     queryFn: () => fetch(`https://jsonplaceholder.typicode.com/posts/${props.id}/comments`).then((res) => res.json()),

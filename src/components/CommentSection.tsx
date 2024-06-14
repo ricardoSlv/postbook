@@ -6,8 +6,8 @@ import { Button } from "./ui/button";
 import { MessageSquareText, Send } from "lucide-react";
 import { Comment } from "@/types/Comment";
 import { Input } from "@/components/ui/input";
-import { UserContext } from "./Feed";
 import { Textarea } from "./ui/textarea";
+import { UserContext } from "./contexts/userContext";
 
 const DEFAULT_COMMENTS_SHOWN = 3;
 const COMMENTS_SHOWN_INCREMENT = 2;
@@ -89,9 +89,9 @@ function CommentCard(props: Comment) {
   );
 }
 
-function AddCommentForm(props: { onSubmitComment: (title: string, text: string) => void }) {
-  const [commentName, setcommentName] = useState("");
-  const [commentText, setcommentText] = useState("");
+export function AddCommentForm(props: { onSubmitComment: (commentName: string, commentText: string) => void }) {
+  const [commentName, setCommentName] = useState("");
+  const [commentText, setCommentText] = useState("");
 
   return (
     <div className="flex-1 w-full">
@@ -100,8 +100,8 @@ function AddCommentForm(props: { onSubmitComment: (title: string, text: string) 
         onSubmit={(e: SyntheticEvent) => {
           e.preventDefault();
           if (commentName.length > 0 && commentText.length > 0) {
-            setcommentText("");
-            setcommentName("");
+            setCommentText("");
+            setCommentName("");
             props.onSubmitComment(commentName, commentText);
           }
         }}
@@ -115,7 +115,7 @@ function AddCommentForm(props: { onSubmitComment: (title: string, text: string) 
               className="shadow-none mb-1 pl-8 w-full appearance-none outline-none"
               value={commentName}
               onChange={(e) => {
-                setcommentName(e.target.value);
+                setCommentName(e.target.value);
               }}
             />
           </div>
@@ -129,10 +129,10 @@ function AddCommentForm(props: { onSubmitComment: (title: string, text: string) 
           </Button>
         </div>
         <Textarea
-          placeholder="Write your a comment..."
+          placeholder="Write your comment..."
           value={commentText}
           onChange={(e) => {
-            setcommentText(e.target.value);
+            setCommentText(e.target.value);
           }}
         />
       </form>

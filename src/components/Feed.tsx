@@ -1,11 +1,10 @@
 "use client";
-import React, { createContext, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import SideNav from "@/components/SideNav";
 import HeaderSection from "@/components/HeaderSection";
 import { User } from "@/types/User";
-import { Button } from "./ui/button";
 import PostCard from "./PostCard";
 import { Post } from "@/types/Post";
 import {
@@ -16,14 +15,21 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./ui/pagination";
+import { CreatePostDialog } from "./CreatePostDialog";
+import { UserContext } from "./contexts/userContext";
 
 const DEFAULT_POSTS_SHOWN = 3;
 
-export const UserContext = createContext<User | null>(null);
 const queryClient = new QueryClient();
 
 export default function Feed(props: { currentUser: User; posts: Post[] }) {
+  const [currentPosts, setCurrentPosts] = useState(props.posts);
   const [page, setPage] = useState(0);
+
+  const onPostCreated = useCallback(async (post: Post) => {
+    setCurrentPosts((currentPosts) => [post, ...currentPosts]);
+    setPage(0);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -37,10 +43,10 @@ export default function Feed(props: { currentUser: User; posts: Post[] }) {
             <main className="flex flex-col gap-4 lg:gap-6 p-4 lg:p-6 overflow-y-scroll">
               <div className="flex justify-between items-center">
                 <h1 className="font-semibold text-lg md:text-2xl">Feed</h1>
-                <Button>Add Post</Button>
+                <CreatePostDialog onPostCreated={onPostCreated} />
               </div>
               <div className="flex flex-col flex-1 justify-center items-stretch gap-6">
-                {props.posts
+                {currentPosts
                   .slice(page * DEFAULT_POSTS_SHOWN, page * DEFAULT_POSTS_SHOWN + DEFAULT_POSTS_SHOWN)
                   .map((post) => (
                     <PostCard key={post.id} {...post} />
